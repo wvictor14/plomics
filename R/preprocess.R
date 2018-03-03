@@ -40,9 +40,6 @@ preprocess <- function(mset, fp = NULL, ch = NULL, invariable_probes = NULL,
   # pkeep is a list of probes to keep (everything else will be filtered out)
 
   # load libraries
-  require(wateRmelon)
-  require(minfi)
-  require(IlluminaHumanMethylation450kmanifest)
 
   pData(mset)$rownames <- rownames(pData(mset))
   pDat <- as.data.frame(pData(mset))
