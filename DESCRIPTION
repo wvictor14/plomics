@@ -1,13 +1,23 @@
 Package: methylkit
 Type: Package
-Title: Helpful Functions For Methylation Array Analysis
+Title: Helpful Functions for Methylation Array Analysis
 Version: 0.1.0
 Author: person("Victor", "Yuan", email = "victor.2wy@gmail.com",
 	      role = c("aut", "cre"))
 Maintainer: Victor Yuan <victor.2wy@gmail.com>
 Description: This package contains functions that I and others have found useful 
-    for the analysis of DNA methylation array data (27k, 450k, EPIC). 
-License: 
+    for the analysis of DNA methylation array data (27k, 450k, EPIC). This 
+    package is not mean't for a comprehensive processing and analysis, but 
+    rather for the sharing of code that is not present in any one of the main
+    methylation analysis packages, but should enhance any researcher's  
+    methylation analysis pipeline. 
+Imports: 
+    minfi (>= 1.22.1)
+    wateRmelon (>= 1.20.3)
+    reshape2 (>= 1.4.3)
+    pheatmap (>= 1.0.8)
+Enhances: minfi
+License: GPL (>= 2)
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1
