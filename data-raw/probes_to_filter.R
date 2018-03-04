@@ -1,16 +1,15 @@
 # M. price 2013 list of cross-hybridizing probes -------------------------
-
 # Load annotation
-UBC_anno <- read.table('Z:/Victor/Documents/UBC Annotation Combined.txt', fill =
-                         TRUE, header = TRUE)
+library(dplyr)
+library(GEOquery)
+base <-'https://www.ncbi.nlm.nih.gov/geo/download/?acc=GPL16304&format=file'
+end <- '&file=GPL16304%5FGene%5Ffeatures%5FPlatformTable%2Etxt%2Egz'
 
-# 641 XY cross hybridizing probes
-UBC_annoXY <- as.character(UBC_anno[grep("YES",UBC_anno$XY_Hits), 'IlmnID'])
-# 2049 Autosomal probes
-UBC_annoAuto <- as.character(UBC_anno[grep("YES",UBC_anno$Autosomal_Hits),
-                                      'IlmnID'])
+mprice <- as_tibble(getGEO('GPL16304')@dataTable@table)
+mprice_XY <- mprice %>% filter(XY_Hits == 'XY_YES') %>% pull(ID)
+mprice_AU <- mprice %>% filter(Autosomal_Hits == 'A_YES') %>% pull(ID)
 
-CH_mprice <- union(UBC_annoAuto, UBC_annoXY) # AND/OR
+mprice_CH <- union(mprice_XY, mprice_AU)
 
 # Overlapping EPIC and 450k probes ------------------------------------
 library(minfiData)
@@ -37,4 +36,6 @@ invar_Bu <- read.csv(text = getURL(paste(base, csv[1], sep = "")))$CpG
 invar_Bl <- read.csv(text = getURL(paste(base, csv[2], sep = "")))$CpG
 invar_Pl <- read.csv(text = getURL(paste(base, csv[3], sep = "")))$CpG
 
-
+library(devtools)
+use_data(mprice_CH, overlap_450k_EPIC, invar_Bu, invar_Bl, invar_Pl, 
+         overwrite = T)
