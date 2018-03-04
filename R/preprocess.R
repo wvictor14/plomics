@@ -19,28 +19,21 @@
 #'   \item data - A filtered and normalized dataframe
 #'   \item pDat - A dataframe containing updated phenotype data information
 #' }
-
-
+#' @details This function takes in a methylset object, and does the following:
+#' (1) Filters poor quality probes based on fp, (2) normalizes beta values with
+#' wateRmelon::BMIQ, (3) filters overlapping 450k/EPIC probes and invariable
+#' probes. FP needs to be precomputed. Any of these probes can be omitted.
+#' 
+#' The reason of filtering overlapping / invariable probes is that normalization
+#' can benefit from these probes as extra observations, whereas poor quality 
+#' probes are removed prior to normalization.
+#' 
+#' If pkeep is supplied, then every other probe setting is overridden, and only
+#' probes in pkeep will be kept, this filtering step is done after 
+#' normalization.
+#' 
 preprocess <- function(mset, fp = NULL, ch = NULL, invariable_probes = NULL,
                        pkeep = NULL, overlapping = NULL, wrongsex, seed = 1){
-  # This function filters an mset and BMIQ normalizes any mset.
-  # fp must be same dimension as mset, and must contain 1 if a observation is failed, or 0 if not
-  # ch is a character vector of cross hybridizing probe names to filter out
-  # overlapping is a character vector of overlapping probes on both 450k/EPIC
-
-  # Note that I filter non-overlapping probes after normalization because these
-  # probes are still useful for QC.
-
-  # Invariable probes are also calculated and filtered after normalization.
-  # invariable_probes is a character vector of probe names that are invariable
-  # in an independent dataset (from R. Edgar)
-
-  # wrongsex is a character vector of sample names that are to be filtered out based on sex inference
-  # if pkeep is specified then fp, ch, and invariable_probes are overridden.
-  # pkeep is a list of probes to keep (everything else will be filtered out)
-
-  # load libraries
-
   pData(mset)$rownames <- rownames(pData(mset))
   pDat <- as.data.frame(pData(mset))
 

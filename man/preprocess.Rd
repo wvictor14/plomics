@@ -37,3 +37,17 @@ List of length two:
 \code{preprocess} returns a list of length two, containing (1) filtered,
 normalized dataframe and (2) pData with QC information
 }
+\details{
+This function takes in a methylset object, and does the following:
+(1) Filters poor quality probes based on fp, (2) normalizes beta values with
+wateRmelon::BMIQ, (3) filters overlapping 450k/EPIC probes and invariable
+probes. FP needs to be precomputed. Any of these probes can be omitted.
+
+The reason of filtering overlapping / invariable probes is that normalization
+can benefit from these probes as extra observations, whereas poor quality 
+probes are removed prior to normalization.
+
+If pkeep is supplied, then every other probe setting is overridden, and only
+probes in pkeep will be kept, this filtering step is done after 
+normalization.
+}
