@@ -3,14 +3,12 @@
 \docType{data}
 \name{mprice_CH}
 \alias{mprice_CH}
-\title{List of XY- and autosomal cross-hybridizing probes from mprice et al. (2013)}
-\format{A character vector of CpG names with length 2083}
+\title{List of XY- and autosomal cross-hybridizing probes from m.price et al. (2013)}
+\format{A character vector of CpG names with length 41937}
 \source{
-Price, E. M., Cotton, A. M., Lam, L. L., Farré, P., Emberly, E.,
-Brown, C. J., … Kobor, M. S. (2013). Additional annotation enhances potential
-for biologically-relevant analysis of the Illumina Infinium
-HumanMethylation450 BeadChip array. Epigenetics & Chromatin, 6, 4.
-http://doi.org/10.1186/1756-8935-6-4
+Chen Y, Lemire M, Choufani S, et al. Discovery of cross-reactive 
+probes and polymorphic CpGs in the Illumina Infinium HumanMethylation450 
+microarray. Epigenetics. 2013;8(2):203-209. doi:10.4161/epi.23470.
 
 https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GPL16304
 }
@@ -18,7 +16,7 @@ https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GPL16304
 mprice_CH
 }
 \description{
-A character vector of 2083 CpG names that were identified to be able to cross
+A character vector of 41937 CpG names that were identified to be able to cross
 hybridize to other locations in the genome (both XY and autosomal).
 }
 \keyword{datasets}

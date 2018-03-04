@@ -11,6 +11,14 @@ mprice_AU <- mprice %>% filter(Autosomal_Hits == 'A_YES') %>% pull(ID)
 
 mprice_CH <- union(mprice_XY, mprice_AU)
 
+# chen list of cross-hybridizing probes ------------------------------------
+library(RCurl)
+library(httr)
+base <- 'http://www.sickkids.ca/MS-Office-Files/Research/Weksberg%20Lab/'
+end <- '48639-non-specific-probes-Illumina450k.xlsx'
+GET((paste(base, end, sep = '')), write_disk(tf <- tempfile(fileext = ".xlsx")))
+chen_CH <- read_excel(tf, 1L) %>% pull(TargetID)
+
 # Overlapping EPIC and 450k probes ------------------------------------
 library(minfiData)
 library(minfiDataEPIC)
@@ -37,5 +45,5 @@ invar_Bl <- read.csv(text = getURL(paste(base, csv[2], sep = "")))$CpG
 invar_Pl <- read.csv(text = getURL(paste(base, csv[3], sep = "")))$CpG
 
 library(devtools)
-use_data(mprice_CH, overlap_450k_EPIC, invar_Bu, invar_Bl, invar_Pl, 
+use_data(mprice_CH, chen_CH, overlap_450k_EPIC, invar_Bu, invar_Bl, invar_Pl, 
          overwrite = T)
