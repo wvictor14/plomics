@@ -15,23 +15,23 @@ preprocess(mset, fp = NULL, threshold_p = 0.01, threshold_s = 0.05,
 number of features. This should be the same dimensions as mset, unless snp
 probes are included in mset.}
 
-\item{threshold_p}{A numeric value between 0 and 1 representing the fraction 
+\item{threshold_p}{A numeric value between 0 and 1 representing the fraction
 of observations required for a probe to be removed.}
 
 \item{threshold_s}{A numeric value between 0 and 1 representing the fraction
 of observations required for a sample to be removed.}
 
-\item{ch}{A character vector specificying the set of cross hybridizing probes 
+\item{ch}{A character vector specificying the set of cross hybridizing probes
 to filter out. Options: 'mprice', 'chen', 'both'.}
 
 \item{invariable_probes}{A character vector of specifying the set of
 invariable probes to filter out. Options: 'Blood', 'Buccal', 'Placenta'.}
 
 \item{threshold_cor}{A numeric value between 0 and 1 specifying the minimum
-mean interarray correlation to keep a sample. If not supplied, then 
+mean interarray correlation to keep a sample. If not supplied, then
 correlations are not calculated.}
 
-\item{overlapping}{A logical vector indicating if 450k/EPIC overlapping 
+\item{overlapping}{A logical vector indicating if 450k/EPIC overlapping
 probes should be kept.}
 
 \item{wrongsex}{A character vector of samplenames to filter out.}
@@ -41,8 +41,8 @@ probes should be kept.}
 \value{
 List of length two:
 \itemize{
-  \item data - A filtered and normalized dataframe
-  \item pDat - A dataframe containing updated phenotype data information
+  \item data - A filtered and normalized tibble of betas
+  \item pDat - A tible containing updated phenotype data information
   \item num_fp - number of probes filtered based on quality of signal
   \item num_ch - number of cross hybridizing probes filtered
   \item num_iv - number of invariable probes filtered
@@ -50,7 +50,7 @@ List of length two:
 }
 \description{
 \code{preprocess} returns a list of length two, containing (1) filtered,
-normalized dataframe and (2) pData with QC information
+normalized tibble and (2) a pData tibble with QC information
 }
 \details{
 This function takes in a methylset object, and does the following:
@@ -62,6 +62,6 @@ The default for probe filtering is 0.01, and the default for sample filtering
 is 0.05.
 
 The reason of filtering overlapping / invariable probes is that normalization
-can benefit from these probes as extra observations, whereas poor quality 
+can benefit from these probes as extra observations, whereas poor quality
 probes are removed prior to normalization.
 }
