@@ -64,8 +64,4 @@ is 0.05.
 The reason of filtering overlapping / invariable probes is that normalization
 can benefit from these probes as extra observations, whereas poor quality 
 probes are removed prior to normalization.
-
-If pkeep is supplied, then every other probe setting is overridden, and only
-probes in pkeep will be kept, this filtering step is done after 
-normalization.
 }
