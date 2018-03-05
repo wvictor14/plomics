@@ -28,7 +28,7 @@ analyzeDetP <- function(detP, pDat, cpg_threshold = 0.01) {
     stop('Number of columns in detP does not match the number of rows in pDat')
   }
   
-  pDat <- pDat %>% mutate(ndetp = colSums(detp > 0.01, na.rm = F))
+  pDat <- pDat %>% mutate(ndetp = colSums(detP > 0.01, na.rm = F))
   
   if (sum(pDat$ndetp > 0.05*nrow(RGsetEx))>0) {
     x <- pDat %>% filter(ndetp > 0.05*nrow(RGsetEx)) %>% select(Sample_Name)
@@ -36,6 +36,6 @@ analyzeDetP <- function(detP, pDat, cpg_threshold = 0.01) {
                 detection p value of 0.05%', x$Sample_Name))  
   }                     
   
-  fp <- detp > 0.01
+  fp <- detP > 0.01
   return(list(as_tibble(fp), as_tibble(pDat)))
 }
