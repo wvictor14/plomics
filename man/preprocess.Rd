@@ -4,8 +4,9 @@
 \alias{preprocess}
 \title{Preprocess methylation array data}
 \usage{
-preprocess(mset, fp = NULL, ch = NULL, invariable_probes = NULL,
-  pkeep = NULL, overlapping = NULL, wrongsex, seed = 1)
+preprocess(mset, fp = NULL, threshold_p = 0.01, threshold_s = 0.05,
+  ch = NULL, invariable_probes = NULL, threshold_cor = NULL,
+  overlapping = F, wrongsex = NULL, seed = 1)
 }
 \arguments{
 \item{mset}{A minfi::methylset object.}
@@ -14,13 +15,24 @@ preprocess(mset, fp = NULL, ch = NULL, invariable_probes = NULL,
 number of features. This should be the same dimensions as mset, unless snp
 probes are included in mset.}
 
-\item{ch}{A character vector of cross hybridizing probes to be filtered out.}
+\item{threshold_p}{A numeric value between 0 and 1 representing the fraction 
+of observations required for a probe to be removed.}
 
-\item{invariable_probes}{A character vector of reference invariable probes to
-filter against.}
+\item{threshold_s}{A numeric value between 0 and 1 representing the fraction
+of observations required for a sample to be removed.}
 
-\item{overlapping}{A character vector of overlapping probes on 450k/EPIC
-array to keep.}
+\item{ch}{A character vector specificying the set of cross hybridizing probes 
+to filter out. Options: 'mprice', 'chen', 'both'.}
+
+\item{invariable_probes}{A character vector of specifying the set of
+invariable probes to filter out. Options: 'Blood', 'Buccal', 'Placenta'.}
+
+\item{threshold_cor}{A numeric value between 0 and 1 specifying the minimum
+mean interarray correlation to keep a sample. If not supplied, then 
+correlations are not calculated.}
+
+\item{overlapping}{A logical vector indicating if 450k/EPIC overlapping 
+probes should be kept.}
 
 \item{wrongsex}{A character vector of samplenames to filter out.}
 
@@ -31,6 +43,9 @@ List of length two:
 \itemize{
   \item data - A filtered and normalized dataframe
   \item pDat - A dataframe containing updated phenotype data information
+  \item num_fp - number of probes filtered based on quality of signal
+  \item num_ch - number of cross hybridizing probes filtered
+  \item num_iv - number of invariable probes filtered
 }
 }
 \description{
@@ -42,6 +57,9 @@ This function takes in a methylset object, and does the following:
 (1) Filters poor quality probes based on fp, (2) normalizes beta values with
 wateRmelon::BMIQ, (3) filters overlapping 450k/EPIC probes and invariable
 probes. FP needs to be precomputed. Any of these probes can be omitted.
+
+The default for probe filtering is 0.01, and the default for sample filtering
+is 0.05.
 
 The reason of filtering overlapping / invariable probes is that normalization
 can benefit from these probes as extra observations, whereas poor quality 
