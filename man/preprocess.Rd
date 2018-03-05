@@ -4,8 +4,8 @@
 \alias{preprocess}
 \title{Preprocess methylation array data}
 \usage{
-preprocess(mset, fp = NULL, threshold_p = 0.01, threshold_s = 0.05,
-  ch = NULL, invariable_probes = NULL, threshold_cor = NULL,
+preprocess(mset, fp = NULL, ch = NULL, invariable_probes = NULL,
+  threshold_p = 0.01, threshold_s = 0.05, threshold_cor = NULL,
   overlapping = F, wrongsex = NULL, seed = 1)
 }
 \arguments{
@@ -15,17 +15,17 @@ preprocess(mset, fp = NULL, threshold_p = 0.01, threshold_s = 0.05,
 number of features. This should be the same dimensions as mset, unless snp
 probes are included in mset.}
 
-\item{threshold_p}{A numeric value between 0 and 1 representing the fraction
-of observations required for a probe to be removed.}
-
-\item{threshold_s}{A numeric value between 0 and 1 representing the fraction
-of observations required for a sample to be removed.}
-
 \item{ch}{A character vector specificying the set of cross hybridizing probes
 to filter out. Options: 'mprice', 'chen', 'both'.}
 
 \item{invariable_probes}{A character vector of specifying the set of
 invariable probes to filter out. Options: 'Blood', 'Buccal', 'Placenta'.}
+
+\item{threshold_p}{A numeric value between 0 and 1 representing the fraction
+of observations required for a probe to be removed.}
+
+\item{threshold_s}{A numeric value between 0 and 1 representing the fraction
+of observations required for a sample to be removed.}
 
 \item{threshold_cor}{A numeric value between 0 and 1 specifying the minimum
 mean interarray correlation to keep a sample. If not supplied, then

@@ -42,9 +42,10 @@
 #' can benefit from these probes as extra observations, whereas poor quality
 #' probes are removed prior to normalization.
 #'
-preprocess <- function(mset, fp = NULL, threshold_p = 0.01, threshold_s = 0.05,
-                       ch = NULL, invariable_probes = NULL, threshold_cor = NULL,
-                      overlapping = F, wrongsex = NULL, seed = 1){
+preprocess <- function(mset, fp = NULL, ch = NULL, invariable_probes = NULL,
+                       threshold_p = 0.01, threshold_s = 0.05,
+                       threshold_cor = NULL, overlapping = F, wrongsex = NULL,
+                       seed = 1){
   pData(mset)$rownames <- rownames(pData(mset))
   pDat <- as_tibble(pData(mset))
 
@@ -84,18 +85,16 @@ preprocess <- function(mset, fp = NULL, threshold_p = 0.01, threshold_s = 0.05,
   if (!is.null(ch)){
     if (ch == 'both'){
       cp <- union(mprice_CH, chen_CH)
-    }
-    if (ch == 'mprice'){
+    } else if (ch == 'mprice'){
       cp <- mprice_CH
-    }
-    if (ch == 'chen'){
+    } else if (ch == 'chen'){
       cp <- chen_CH
+    } else {
+      stop('ch must be either "both", "chen", "mprice", or NULL.')
     }
     cp <- intersect(cp, rownames(mset))
     print(paste('Removing', length(cp),'cross hybridizing probes.'))
     mset <- mset[setdiff(rownames(mset), cp),]
-  } else {
-      stop('ch must be either "both", "chen", "mprice", or NULL.')
   }
 
 #TODO: for custom supplied ch
@@ -143,47 +142,33 @@ preprocess <- function(mset, fp = NULL, threshold_p = 0.01, threshold_s = 0.05,
 
   # remove invariable probes
   if (!is.null(invariable_probes)) {
-    if (invariable_probes != 'Blood'){
-      if (invariable_probes != 'Buccal') {
-        if (invariable_probes != 'Placenta')
-          stop(paste('Only blood, buccal, and placenta invariable probe',
+    if (invariable_probes == 'Blood'){
+      reference <- invar_Bl
+    } else if (invariable_probes == 'Buccal'){
+      reference <- invar_Bu
+    } else if (invariable_probes == 'Placenta'){
+      reference <- invar_Pl
+    } else {
+      stop(paste('Only blood, buccal, and placenta invariable probe',
                      'references are available.'))
-      }
     }
-    # calculate range per probe
+    print(paste('Using', length(reference), invariable_probes, 'reference',
+                'nonvariable probes...'))
     print('Calculating your dataset-specific invariable probes...')
-    Variation<-function(x) {quantile(x, c(0.9),na.rm=T)[[1]] -
-        quantile(x, c(0.1), na.rm=T)[[1]]}
 
-    rr <- lapply(1:nrow(BMIQ), function(x) Variation(BMIQ[x,]))
+    Variation <- function(x) {quantile(x, c(0.9),na.rm=T)[[1]] -
+        quantile(x, c(0.1), na.rm=T)[[1]]}
+    rr <- lapply(match(reference, rownames(BMIQ)),
+                 function(x) Variation(BMIQ[x,]))
     rr <- unlist(rr)
 
     # get cpg names of probes with <0.05 range
-    ip <-rownames(BMIQ)[which(rr<0.05)]
-    print(paste('There are', length(ip), 'invariable probes in your data.'))
-
-    if (invariable_probes == 'Blood') {
-      print('Using blood reference set...')
-      iv <- intersect(ip, invar_Bl)
-    }
-    if (invariable_probes == 'Buccal'){
-      print('Using buccal reference set...')
-      iv <- intersect(ip, invar_Bu)
-    }
-    if (invariable_probes == 'Placenta'){
-      print('Using placenta reference set...')
-      iv <- intersect(ip, invar_Pl)
-    }
+    iv <- intersect(reference[which(rr < 0.05)], reference)
 
     print(paste(length(iv),
-                ' of your dataset-specific probes overlap the reference, and',
-                ' will be removed.', sep = ''))
-
+                ' of your dataset-specific invariable probes overlap',
+                ' the reference, and will be removed.', sep = ''))
     BMIQ <- BMIQ[setdiff(rownames(BMIQ), iv),]
-  } else {
-    if (!is.null(invariable_probes)) {
-      warning('No invariable probes filtered. Check format.')
-    }
   }
 
   list(data = as_tibble(BMIQ, rownames = 'rownames'), pData = pDat,
