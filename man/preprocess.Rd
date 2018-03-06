@@ -5,8 +5,8 @@
 \title{Preprocess methylation array data}
 \usage{
 preprocess(mset, fp = NULL, ch = NULL, invariable_probes = NULL,
-  threshold_p = 0.01, threshold_s = 0.05, threshold_cor = NULL,
-  overlapping = F, wrongsex = NULL, seed = 1)
+  threshold_p = 0.01, threshold_s = 0.05, normalize = T,
+  threshold_cor = NULL, overlapping = F, wrongsex = NULL, seed = 1)
 }
 \arguments{
 \item{mset}{A minfi::methylset object.}
@@ -27,6 +27,8 @@ of observations required for a probe to be removed.}
 \item{threshold_s}{A numeric value between 0 and 1 representing the fraction
 of observations required for a sample to be removed.}
 
+\item{normalize}{A logical vector indicating if normalization should be done.}
+
 \item{threshold_cor}{A numeric value between 0 and 1 specifying the minimum
 mean interarray correlation to keep a sample. If not supplied, then
 correlations are not calculated.}
@@ -42,10 +44,11 @@ probes should be kept.}
 List of length two:
 \itemize{
   \item data - A filtered and normalized tibble of betas
-  \item pDat - A tible containing updated phenotype data information
-  \item num_fp - number of probes filtered based on quality of signal
-  \item num_ch - number of cross hybridizing probes filtered
-  \item num_iv - number of invariable probes filtered
+  \item pDat - A tibble containing updated phenotype data information
+  \item probes_filtered - a tibble containing the number of probes filtered
+  \item samples_filtered_bp - samples that filtered based on number of poor
+  quality probes
+  \item samples_filtered_cor - samples filtered based on correlation
 }
 }
 \description{

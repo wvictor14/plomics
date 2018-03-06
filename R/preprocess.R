@@ -26,10 +26,11 @@
 #' @return List of length two:
 #' \itemize{
 #'   \item data - A filtered and normalized tibble of betas
-#'   \item pDat - A tible containing updated phenotype data information
-#'   \item num_fp - number of probes filtered based on quality of signal
-#'   \item num_ch - number of cross hybridizing probes filtered
-#'   \item num_iv - number of invariable probes filtered
+#'   \item pDat - A tibble containing updated phenotype data information
+#'   \item probes_filtered - a tibble containing the number of probes filtered
+#'   \item samples_filtered_bp - samples that filtered based on number of poor
+#'   quality probes
+#'   \item samples_filtered_cor - samples filtered based on correlation
 #' }
 #' @details This function takes in a methylset object, and does the following:
 #' (1) Filters poor quality probes based on fp, (2) normalizes beta values with
@@ -132,7 +133,7 @@ preprocess <- function(mset, fp = NULL, ch = NULL, invariable_probes = NULL,
     c <- cor(getBeta(mset), use = 'pairwise.complete.obs')
     sample_c <- apply(c, 1, mean) # Calculate mean
     pDat$meanSScor <- sample_c[match(names(sample_c), pDat$rownames)]
-    bs_c <- pDat %>% filter(threshold_cor < threshold_cor) %>% pull(rownames)
+    bs_c <- pDat %>% filter(meanSScor < threshold_cor) %>% pull(rownames)
 
     # remove samples based on mean interarray cor
     if (length(bs_c) > 0){
@@ -142,6 +143,8 @@ preprocess <- function(mset, fp = NULL, ch = NULL, invariable_probes = NULL,
       mset <- mset[,setdiff(colnames(mset), bs_c)]
       pDat <- as_tibble(pData(mset))
     }
+  } else {
+    bs_c = 0
   }
 
   # remove incorrect sex samples
@@ -187,13 +190,14 @@ preprocess <- function(mset, fp = NULL, ch = NULL, invariable_probes = NULL,
     BMIQ <- BMIQ[setdiff(rownames(BMIQ), iv),]
   }
 
-  list(data = as_tibble(BMIQ, rownames = 'rownames'), pData = pDat,
-       processing = tibble(num_fp = ifelse(!is.null(fp), length(bp), 0),
-                           num_ch = ifelse(!is.null(ch), length(cp), 0),
-                           num_iv = ifelse(!is.null(invariable_probes),
-                                           length(iv), 0),
-                           overlap = ifelse(overlapping,
-                                            length(overlap_450k_EPIC), 0),
-                           fp_bad_samp = ifelse(!is.null(fp), bs, 0),
-                           cor_bad_samp = ifelse(length(bs_c) > 0, bs_c, 0)))
+  list(data = as_tibble(BMIQ, rownames = 'rownames'),
+       pData = pDat,
+       probes_filtered = tibble(num_fp = ifelse(!is.null(fp), length(bp), 0),
+                                num_ch = ifelse(!is.null(ch), length(cp), 0),
+                                num_iv = ifelse(!is.null(invariable_probes),
+                                                length(iv), 0),
+                                overlap = ifelse(overlapping,
+                                                 length(overlap_450k_EPIC),0)),
+       samples_filtered_bp = if (!is.null(fp)) bs else (0),
+       samples_filtered_cor = if (!is.null(threshold_cor)) bs_c else (0))
 }
