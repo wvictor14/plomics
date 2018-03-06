@@ -22,6 +22,7 @@
 #' probes should be kept.
 #' @param wrongsex A character vector of samplenames to filter out.
 #' @param seed Sets a seed for normalization.
+#' @param normalize A logical vector indicating if normalization should be done.
 #' @return List of length two:
 #' \itemize{
 #'   \item data - A filtered and normalized tibble of betas
@@ -43,24 +44,60 @@
 #' probes are removed prior to normalization.
 #'
 preprocess <- function(mset, fp = NULL, ch = NULL, invariable_probes = NULL,
-                       threshold_p = 0.01, threshold_s = 0.05,
+                       threshold_p = 0.01, threshold_s = 0.05, normalize = T,
                        threshold_cor = NULL, overlapping = F, wrongsex = NULL,
                        seed = 1){
   pData(mset)$rownames <- rownames(pData(mset))
   pDat <- as_tibble(pData(mset))
 
   #checks --------------------------------------------------------------------
-  if (length(wrongsex) > 0){
+  if (!is.null(wrongsex)){
     if (!all(wrongsex %in% colnames(mset))){
       warning(paste(setdiff(wrongsex, colnames(mset)), 'are not in the data'))
     }
+    if (class(wrongsex != 'character')){
+      stop('wrongsex must be a character vector.')
+    }
   }
 
-  # filter probes on fp and ch
+  if (!is.null(invariable_probes)) {
+    if (invariable_probes == 'Blood'){
+      reference <- invar_Bl
+    } else if (invariable_probes == 'Buccal'){
+      reference <- invar_Bu
+    } else if (invariable_probes == 'Placenta'){
+      reference <- invar_Pl
+    } else {
+      stop('Invalid argument for invariable_probes.')
+    }
+  }
+
   if (!is.null(fp)) {
     if (ncol(fp) != ncol(mset)){
       stop('fp must have same number of columns as mset')
+    } else if (!'data.frame' %in% class(fp)){
+      stop('fp must be data frame or tibble.')
     }
+  }
+
+  if (!is.null(ch)){
+    if (ch == 'both'){
+      cp <- union(mprice_CH, chen_CH)
+    } else if (ch == 'mprice'){
+      cp <- mprice_CH
+    } else if (ch == 'chen'){
+      cp <- chen_CH
+    } else {
+      stop('ch must be either "both", "chen", "mprice"')
+    }
+  }
+
+  if (!is.logical(overlapping)) {
+    stop('overlapping must be a logical vector.')
+  }
+
+  # filter probes on fp
+  if (!is.null(fp)) {
     # calculate failed probes / samples
     bp <- rownames(fp)[rowSums(fp) > threshold_p*ncol(fp)] # failed probes
     bs <- colnames(fp)[colSums(fp) > threshold_s*nrow(fp)] # failed samples
@@ -79,15 +116,6 @@ preprocess <- function(mset, fp = NULL, ch = NULL, invariable_probes = NULL,
 
   # remove crosshybridizing
   if (!is.null(ch)){
-    if (ch == 'both'){
-      cp <- union(mprice_CH, chen_CH)
-    } else if (ch == 'mprice'){
-      cp <- mprice_CH
-    } else if (ch == 'chen'){
-      cp <- chen_CH
-    } else {
-      stop('ch must be either "both", "chen", "mprice", or NULL.')
-    }
     cp <- intersect(cp, rownames(mset))
     print(paste('Removing', length(cp),'cross hybridizing probes.'))
     mset <- mset[setdiff(rownames(mset), cp),]
@@ -104,10 +132,10 @@ preprocess <- function(mset, fp = NULL, ch = NULL, invariable_probes = NULL,
     c <- cor(getBeta(mset), use = 'pairwise.complete.obs')
     sample_c <- apply(c, 1, mean) # Calculate mean
     pDat$meanSScor <- sample_c[match(names(sample_c), pDat$rownames)]
+    bs_c <- pDat %>% filter(threshold_cor < threshold_cor) %>% pull(rownames)
 
     # remove samples based on mean interarray cor
-    if (sum(pDat$meanSScor > threshold_cor) > 0){
-      bs_c <- pDat %>% filter(threshold_cor < threshold_cor) %>% pull(rownames)
+    if (length(bs_c) > 0){
       print(paste('Removing', length(bs_c),
                   'samples that had < 0.95 mean interarray correlation.'))
       pData(mset) <- DataFrame(pDat)
@@ -117,7 +145,7 @@ preprocess <- function(mset, fp = NULL, ch = NULL, invariable_probes = NULL,
   }
 
   # remove incorrect sex samples
-  if ((length(wrongsex) > 0) & (all(wrongsex %in% colnames(mset)))) {
+  if ((!is.null(wrongsex)) & (all(wrongsex %in% colnames(mset)))) {
     print(paste('Removing', length(wrongsex), 'incorrectly labelled samples, based on sex inference.'))
     pData(mset) <- DataFrame(pDat)
     mset <- mset[,setdiff(colnames(mset), wrongsex)]
@@ -125,9 +153,11 @@ preprocess <- function(mset, fp = NULL, ch = NULL, invariable_probes = NULL,
   }
 
   # Normalization
-  print('Normalizing data...')
-  set.seed(seed)
-  BMIQ <- as.data.frame(BMIQ(mset), nfit = 50000)
+  if (normalize == T) {
+    print('Normalizing data...')
+    set.seed(seed)
+    BMIQ <- as.data.frame(BMIQ(mset, nfit = 50000))
+  }
 
   # remove non-overlapping probes
   if (overlapping == T) {
@@ -138,16 +168,6 @@ preprocess <- function(mset, fp = NULL, ch = NULL, invariable_probes = NULL,
 
   # remove invariable probes
   if (!is.null(invariable_probes)) {
-    if (invariable_probes == 'Blood'){
-      reference <- invar_Bl
-    } else if (invariable_probes == 'Buccal'){
-      reference <- invar_Bu
-    } else if (invariable_probes == 'Placenta'){
-      reference <- invar_Pl
-    } else {
-      stop(paste('Only blood, buccal, and placenta invariable probe',
-                     'references are available.'))
-    }
     print(paste('Using', length(reference), invariable_probes, 'reference',
                 'nonvariable probes...'))
     print('Calculating your dataset-specific invariable probes...')
@@ -168,7 +188,12 @@ preprocess <- function(mset, fp = NULL, ch = NULL, invariable_probes = NULL,
   }
 
   list(data = as_tibble(BMIQ, rownames = 'rownames'), pData = pDat,
-       num_fp = ifelse(!is.null(fp), length(bp), 0),
-       num_ch = ifelse(!is.null(ch), length(cp), 0),
-       num_iv = ifelse(!is.null(invariable_probes), length(iv), 0))
+       processing = tibble(num_fp = ifelse(!is.null(fp), length(bp), 0),
+                           num_ch = ifelse(!is.null(ch), length(cp), 0),
+                           num_iv = ifelse(!is.null(invariable_probes),
+                                           length(iv), 0),
+                           overlap = ifelse(overlapping,
+                                            length(overlap_450k_EPIC), 0),
+                           fp_bad_samp = ifelse(!is.null(fp), bs, 0),
+                           cor_bad_samp = ifelse(length(bs_c) > 0, bs_c, 0)))
 }
