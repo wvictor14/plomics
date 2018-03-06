@@ -56,7 +56,7 @@ preprocess <- function(mset, fp = NULL, ch = NULL, invariable_probes = NULL,
     if (!all(wrongsex %in% colnames(mset))){
       warning(paste(setdiff(wrongsex, colnames(mset)), 'are not in the data'))
     }
-    if (class(wrongsex != 'character')){
+    if (class(wrongsex) != 'character'){
       stop('wrongsex must be a character vector.')
     }
   }
