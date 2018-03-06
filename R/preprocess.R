@@ -49,11 +49,7 @@ preprocess <- function(mset, fp = NULL, ch = NULL, invariable_probes = NULL,
   pData(mset)$rownames <- rownames(pData(mset))
   pDat <- as_tibble(pData(mset))
 
-  #checks
-  #if (all(rownames(fp) != rownames(mset))){
-  #  stop('row names of failed probes matrix needs to match row names of mset')
-  #}
-
+  #checks --------------------------------------------------------------------
   if (length(wrongsex) > 0){
     if (!all(wrongsex %in% colnames(mset))){
       warning(paste(setdiff(wrongsex, colnames(mset)), 'are not in the data'))
