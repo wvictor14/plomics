@@ -202,12 +202,19 @@ preprocess <- function(mset, fp = NULL, ch = NULL, invariable_probes = NULL,
 
   list(data = as_tibble(BMIQ, rownames = 'rownames'),
        pData = pDat,
-       probes_filtered = tibble(num_fp = ifelse(!is.null(fp), length(bp), 0),
-                                num_ch = ifelse(!is.null(ch), length(cp), 0),
-                                num_iv = ifelse(!is.null(invariable_probes),
-                                                length(iv), 0),
-                                overlap = ifelse(overlapping,
-                                                 length(overlap_450k_EPIC),0)),
-       samples_filtered_bp = if (!is.null(fp)) bs else (0),
-       samples_filtered_cor = if (!is.null(threshold_cor)) bs_c else (0))
+       filtering = tibble(var = c('Failed probes',
+                                  'Cross-hybridizing probes',
+                                  'Invariable probes',
+                                  'Overlapping probes',
+                                  'Samples removed based on num failed probes',
+                                  'Samples removed based on correlation'),
+                          val = list(ifelse(!is.null(fp), length(bp), 0),
+                                    ifelse(!is.null(ch), length(cp), 0),
+                                    ifelse(!is.null(invariable_probes),
+                                           length(iv), 0),
+                                    ifelse(overlapping,
+                                           length(overlap_450k_EPIC),0),
+                                    if (!is.null(fp)) bs else (0),
+                                    if (!is.null(threshold_cor)) bs_c else (0)))
+       )
 }
