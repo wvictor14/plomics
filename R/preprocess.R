@@ -210,13 +210,23 @@ preprocess <- function(mset, fp = NULL, ch = NULL, invariable_probes = NULL,
                                   'Overlapping probes',
                                   'Samples removed based on num failed probes',
                                   'Samples removed based on correlation'),
-                          val = list(ifelse(!is.null(fp), length(bp), 0),
-                                    ifelse(!is.null(ch), length(cp), 0),
-                                    ifelse(!is.null(invariable_probes),
-                                           length(iv), 0),
-                                    ifelse(overlapping,
-                                           length(overlap_450k_EPIC),0),
-                                    if (!is.null(fp)) bs else (0),
-                                    if (!is.null(threshold_cor)) bs_c else (0)))
+                          val = c(ifelse(!is.null(fp), length(bp), 0),
+                                  ifelse(!is.null(ch), length(cp), 0),
+                                  ifelse(!is.null(invariable_probes),
+                                         length(iv), 0),
+                                  ifelse(overlapping,
+                                         length(overlap_450k_EPIC), 0),
+                                  ifelse(!is.null(fp), length(bs), 0),
+                                  ifelse(!is.null(threshold_cor), length(bs_c),
+                                         0)),
+                          content = list(if (!is.null(fp)) bp else (0),
+                                         if (!is.null(ch)) cp else (0),
+                                         if (!is.null(invariable_probes))
+                                                iv else (0),
+                                         if (overlapping)
+                                           overlap_450k_EPIC else (0),
+                                         if (!is.null(fp)) bs else (0),
+                                         if (!is.null(threshold_cor))
+                                           bs_c else (0)))
        )
 }
