@@ -169,14 +169,16 @@ preprocess <- function(mset, fp = NULL, ch = NULL, invariable_probes = NULL,
   if (normalize == T) {
     print('Normalizing data...')
     set.seed(seed)
-    BMIQ <- as.data.frame(BMIQ(mset, nfit = 50000))
+    Data <- as.data.frame(BMIQ(mset, nfit = 50000))
+  } else {
+    Data <- getBeta(mset)
   }
 
   # remove non-overlapping probes
   if (overlapping == T) {
-    print(paste('Keeping', length(intersect(rownames(BMIQ), overlap_450k_EPIC)),
+    print(paste('Keeping', length(intersect(rownames(Data), overlap_450k_EPIC)),
                 'probes that are not present in 450k and EPIC'))
-    BMIQ <- BMIQ[intersect(rownames(BMIQ), overlap_450k_EPIC),]
+    Data <- Data[intersect(rownames(Data), overlap_450k_EPIC),]
   }
 
   # remove invariable probes
@@ -187,8 +189,8 @@ preprocess <- function(mset, fp = NULL, ch = NULL, invariable_probes = NULL,
 
     Variation <- function(x) {quantile(x, c(0.9),na.rm=T)[[1]] -
         quantile(x, c(0.1), na.rm=T)[[1]]}
-    rr <- lapply(match(reference, rownames(BMIQ)),
-                 function(x) Variation(BMIQ[x,]))
+    rr <- lapply(match(reference, rownames(Data)),
+                 function(x) Variation(Data[x,]))
     rr <- unlist(rr)
 
     # get cpg names of probes with <0.05 range
@@ -197,10 +199,10 @@ preprocess <- function(mset, fp = NULL, ch = NULL, invariable_probes = NULL,
     print(paste(length(iv),
                 ' of your dataset-specific invariable probes overlap',
                 ' the reference, and will be removed.', sep = ''))
-    BMIQ <- BMIQ[setdiff(rownames(BMIQ), iv),]
+    Data <- Data[setdiff(rownames(Data), iv),]
   }
 
-  list(data = as_tibble(BMIQ, rownames = 'rownames'),
+  list(data = as_tibble(Data, rownames = 'rownames'),
        pData = pDat,
        filtering = tibble(var = c('Failed probes',
                                   'Cross-hybridizing probes',
