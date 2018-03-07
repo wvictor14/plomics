@@ -43,6 +43,14 @@
 #' The reason of filtering overlapping / invariable probes is that normalization
 #' can benefit from these probes as extra observations, whereas poor quality
 #' probes are removed prior to normalization.
+#' @examples
+#' library(methylki)
+#' library(minfiData)
+#' library(dplyr)
+#' library(wateRmelon)
+#'
+#' data(MsetEx)
+#' x <- preprocess(MsetEx, normalize = F, threshold_cor = 0.92)
 #'
 preprocess <- function(mset, fp = NULL, ch = NULL, invariable_probes = NULL,
                        threshold_p = 0.01, threshold_s = 0.05, normalize = T,
@@ -54,12 +62,14 @@ preprocess <- function(mset, fp = NULL, ch = NULL, invariable_probes = NULL,
   #checks --------------------------------------------------------------------
   if (!is.null(wrongsex)){
     if (!all(wrongsex %in% colnames(mset))){
-      warning(paste(setdiff(wrongsex, colnames(mset)), 'are not in the data'))
+      message(paste(c(setdiff(wrongsex, colnames(mset)),'are not in the data'),
+                    collapse = ', '))
     }
     if (class(wrongsex) != 'character'){
       stop('wrongsex must be a character vector.')
     }
   }
+
 
   if (!is.null(invariable_probes)) {
     if (invariable_probes == 'Blood'){
