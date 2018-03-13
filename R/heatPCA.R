@@ -31,8 +31,6 @@ heatPCA <- function(pc_matrix, pDat, metric = 'Rsquared', labels, returnMat = F)
          (samples) in metadata')
 
   # make sure all sample labels are the same
-  stopifnot(rownames(pc_matrix) %in% rownames(pDat))
-  stopifnot(rownames(pDat) %in% rownames(pc_matrix))
   stopifnot(!is.null(colnames(pc_matrix))) #colnames of scores must be present
 
   # make sure metrics are Pval or Rsqaured
@@ -63,7 +61,7 @@ heatPCA <- function(pc_matrix, pDat, metric = 'Rsquared', labels, returnMat = F)
   # j-th meta variable.
 
   # bind both dataframes together
-  data <- cbind(pDat[rownames(pc_matrix),,drop=F], pc_matrix)
+  data <- cbind(pDat[,,drop=F], pc_matrix)
 
   y = colnames(pc_matrix) # take PC scores names
   x = colnames(pDat)   # take out meta categorical labels
