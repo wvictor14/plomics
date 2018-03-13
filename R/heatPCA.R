@@ -19,7 +19,8 @@
 #' pheatmap::pheatmap and RColorBrewer.
 #' ##TODO:: implement % variance explained.
 #' ##TODO:: implement return p-values
-heatPCA <- function(pc_matrix, pDat, metric = 'Rsquared', labels, returnMat = F){
+heatPCA <- function(pc_matrix, pDat, metric = 'Rsquared', labels = NULL,
+                    returnMat = F){
 
   require(RColorBrewer) # for colors
   require(pheatmap) # for heatmap
