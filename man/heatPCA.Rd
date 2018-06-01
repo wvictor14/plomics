@@ -4,7 +4,8 @@
 \alias{heatPCA}
 \title{Create a heatmap of association between PCs and clinical variables}
 \usage{
-heatPCA(pc_matrix, pDat, metric = "Rsquared", labels, returnMat = F)
+heatPCA(pc_matrix, pDat, metric = "Rsquared", labels = NULL,
+  returnMat = F)
 }
 \arguments{
 \item{pc_matrix}{A rotated p x n dataframe, where p are the PC scores
