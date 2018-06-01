@@ -68,3 +68,13 @@ The reason of filtering overlapping / invariable probes is that normalization
 can benefit from these probes as extra observations, whereas poor quality
 probes are removed prior to normalization.
 }
+\examples{
+library(methylki)
+library(minfiData)
+library(dplyr)
+library(wateRmelon)
+
+data(MsetEx)
+x <- preprocess(MsetEx, normalize = F, threshold_cor = 0.92)
+
+}
