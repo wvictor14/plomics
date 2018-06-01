@@ -8,25 +8,26 @@ variables and a dataframe of dependent variables}
 lmmatrix(dep, ind, metric = "Rsquared")
 }
 \arguments{
-\item{dep}{A d x n matrix of dependent variables, where the variables are
-arranged in rows, and columns for samples or observations.}
+\item{dep}{n x d matrix or dataframe of dependent variables, where the
+variables are arranged in columns, and samples or observations in rows.}
 
-\item{ind}{A i x n dataframe of independent variables, in same format as dep.}
+\item{ind}{n x i matrix or dataframe of independent variables, in same format
+as dep.}
 
-\item{metric}{Can be 'Rsquared' or 'Pvalue'. Determines contents of output
-matrix}
+\item{metric}{Determines what is returned from linear models. Either
+'Rsquared' or 'Pvalue'.}
 }
 \value{
 A i x d matrix of pvalues or rsquared values.
 }
 \description{
-\code{heatPCA} tests association between independent variables and dependent
+\code{lmmatrix} tests association between independent variables and dependent
 variables through simple linear regression (1 predictor variable)
 }
 \details{
 Each independent variable is tested for their association with each
-dependent variable in simple linear regression, and a pvalue or rsquared is
-extracted and returned as a matrix.
+dependent variable in simple linear regression (ind ~ dep), and a pvalue or
+rsquared is extracted and returned as a matrix.
 }
 \examples{
 ## to calculate PC association with covariates
@@ -36,8 +37,8 @@ data(RGsetEx)
 betas <- na.omit(getBeta(RGsetEx))
 pDat <- as.data.frame(pData(RGsetEx))
 pc_obj <- prcomp(t(betas))
-pc_matrix <- t(pc_obj$x)
-cov <- t(pDat[,c('Sample_Group', 'age', 'sex')])
+pc_matrix <- pc_obj$x
+cov <- pDat[,c('Sample_Group', 'age', 'sex')]
 
 lmmatrix(dep = pc_matrix, ind = cov)
 lmmatrix(dep = pc_matrix, ind = cov, metric = 'Pvalue')
