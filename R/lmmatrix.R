@@ -4,17 +4,16 @@
 #' \code{heatPCA} tests association between independent variables and dependent
 #' variables through simple linear regression (1 predictor variable)
 #'
-#' @param dep A p x n matrix of dependent variables, where p are the variables
-#' and n are observations or samples.
-#' @param ind A n x m dataframe, where m columns are the number of covariates
-#' to be tested for association with the dependent variables
+#' @param dep A d x n matrix of dependent variables, where the variables are
+#' arranged in rows, and columns for samples or observations.
+#' @param ind A i x n dataframe of independent variables, in same format as dep.
 #' @param metric Can be 'Rsquared' or 'Pvalue'. Determines contents of output
 #' matrix
 #'
 #' @details Each independent variable is tested for their association with each
 #' dependent variable in simple linear regression, and a pvalue or rsquared is
 #' extracted and returned as a matrix.
-#' @return A p x m matrix of pvalues or rsquared values.
+#' @return A i x d matrix of pvalues or rsquared values.
 #'
 #' @examples
 #' ## to calculate PC association with covariates
@@ -22,27 +21,25 @@
 #' library(minfiData)
 #' data(RGsetEx)
 #' betas <- na.omit(getBeta(RGsetEx))
-#' pDat <- pData(RGsetEx)
+#' pDat <- as.data.frame(pData(RGsetEx))
 #' pc_obj <- prcomp(t(betas))
-#' pc_matrix <- pc_obj$x
+#' pc_matrix <- t(pc_obj$x)
+#' cov <- t(pDat[,c('Sample_Group', 'age', 'sex')])
 #'
-#' lmmatrix(dep = pc_matrix, ind = pDat[,c('Sample_Group', 'age', 'sex')])
-#' lmmatrix(dep = pc_matrix, ind = pDat[,c('Sample_Group', 'age', 'sex')],
-#'          metric = 'Pvalue')
+#' lmmatrix(dep = pc_matrix, ind = cov)
+#' lmmatrix(dep = pc_matrix, ind = cov, metric = 'Pvalue')
 
 lmmatrix <- function(dep, ind, metric = 'Rsquared'){
   # define output matrix
-  n_dep <- ncol(dep)
-  n_ind <- ncol(ind)
-  out <- matrix(NA,ncol=n_ind, nrow=n_dep)
+  n_dep <- nrow(dep)
+  n_ind <- nrow(ind)
+
+  out <- matrix(NA, ncol=n_dep, nrow=n_ind)
 
   # run linear models
-  for(j in 1:n_ind)
-  {
-    for(i in 1:n_dep)
-    {
-      fit <- summary(lm(dep[,i] ~ ind[,j], na.action=na.omit))
-
+  for(i in 1:n_ind) {
+    for(j in 1:n_dep) {
+      fit <- summary(lm(dep[j,] ~ ind[i,], na.action=na.omit))
       if (metric == 'Pvalue'){
         out[i,j] <- fit$coefficients[2,4]
       }
@@ -51,8 +48,8 @@ lmmatrix <- function(dep, ind, metric = 'Rsquared'){
       }
     }
   }
-  rownames(out) <- colnames(dep)
-  colnames(out) <- names(ind)
+  rownames(out) <- rownames(ind)
+  colnames(out) <- rownames(dep)
 
   out
 }

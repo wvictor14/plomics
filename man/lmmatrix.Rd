@@ -8,17 +8,16 @@ variables and a dataframe of dependent variables}
 lmmatrix(dep, ind, metric = "Rsquared")
 }
 \arguments{
-\item{dep}{A p x n matrix of dependent variables, where p are the variables
-and n are observations or samples.}
+\item{dep}{A d x n matrix of dependent variables, where the variables are
+arranged in rows, and columns for samples or observations.}
 
-\item{ind}{A n x m dataframe, where m columns are the number of covariates
-to be tested for association with the dependent variables}
+\item{ind}{A i x n dataframe of independent variables, in same format as dep.}
 
 \item{metric}{Can be 'Rsquared' or 'Pvalue'. Determines contents of output
 matrix}
 }
 \value{
-A p x m matrix of pvalues or rsquared values.
+A i x d matrix of pvalues or rsquared values.
 }
 \description{
 \code{heatPCA} tests association between independent variables and dependent
@@ -35,11 +34,11 @@ extracted and returned as a matrix.
 library(minfiData)
 data(RGsetEx)
 betas <- na.omit(getBeta(RGsetEx))
-pDat <- pData(RGsetEx)
+pDat <- as.data.frame(pData(RGsetEx))
 pc_obj <- prcomp(t(betas))
-pc_matrix <- pc_obj$x
+pc_matrix <- t(pc_obj$x)
+cov <- t(pDat[,c('Sample_Group', 'age', 'sex')])
 
-lmmatrix(dep = pc_matrix, ind = pDat[,c('Sample_Group', 'age', 'sex')])
-lmmatrix(dep = pc_matrix, ind = pDat[,c('Sample_Group', 'age', 'sex')],
-         metric = 'Pvalue')
+lmmatrix(dep = pc_matrix, ind = cov)
+lmmatrix(dep = pc_matrix, ind = cov, metric = 'Pvalue')
 }
