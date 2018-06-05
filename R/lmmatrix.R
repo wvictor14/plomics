@@ -37,7 +37,7 @@ lmmatrix <- function(dep, ind, metric = 'Rsquared'){
   # run linear models
   for(i in 1:n_ind) {
     for(j in 1:n_dep) {
-      fit <- summary(lm(dep[,j] ~ ind[,i], na.action=na.omit))
+      fit <- summary(lm(dep[,j,drop=T] ~ ind[,i,drop=T], na.action=na.omit))
       if (metric == 'Pvalue'){
         out[i,j] <- fit$coefficients[2,4]
       }
