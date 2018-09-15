@@ -15,7 +15,7 @@ Description: This package contains functions that I and others have found useful
 Imports: 
 Suggests:
     minfi (>= 1.22.1),
-    wateRmelon (>= 1.20.3)
+    wateRmelon (>= 1.20.3),
     minfiData (>= 0.24.0),
     minfiDataEPIC (>= 1.4.0)
 Enhances: minfi
