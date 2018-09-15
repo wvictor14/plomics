@@ -1,0 +1,42 @@
+---
+title: "README"
+author: "Victor"
+date: "September 14, 2018"
+output: md_document
+---
+
+# vicbits
+
+This is my collection of tools for DNA methylation analysis.
+
+### Install
+
+```{r message = F}
+library(devtools)
+install_github('wvictor14/vicbits')
+```
+
+Probably the only function that is general enough to be useful is the `lmmatrix` function:
+
+```{r message = F}
+library(vicbits) 
+
+# load example data
+library(minfiData) 
+data('RGsetEx')
+
+# calculate pcs on the data
+betas <- getBeta(RGsetEx)
+pc_obj <- prcomp(t(na.omit(betas)), center = T, scale = T)
+rotated <- pc_obj$x
+
+#rsquared
+lmmatrix(dep = rotated,
+         ind = pData(RGsetEx)[,c('Sample_Group', 'age', 'sex', 'status')])
+
+#pvalue
+lmmatrix(dep = rotated,
+         ind = pData(RGsetEx)[,c('Sample_Group', 'age', 'sex', 'status')],
+         metric = 'Pvalue')
+```
+
