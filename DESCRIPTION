@@ -1,22 +1,21 @@
-Package: methylkit
+Package: vicbits
 Type: Package
 Title: Helpful Functions for Methylation Array Analysis
 Version: 0.1.0
 Author: person("Victor", "Yuan", email = "victor.2wy@gmail.com",
 	      role = c("aut", "cre"))
 Maintainer: Victor Yuan <victor.2wy@gmail.com>
-URL: http://github.com/wvictor14/methylkit
-BugReports: http://github.com/wvictor14/methylkit
+URL: http://github.com/wvictor14/vicbits
+BugReports: http://github.com/wvictor14/vicbits
 Description: This package contains functions that I and others have found useful 
     for the analysis of DNA methylation array data (27k, 450k, EPIC). This 
     package is not mean't for a comprehensive processing and analysis, but 
-    rather for the sharing of code that is not present in any one of the main
-    methylation analysis packages, but should enhance any researcher's  
-    methylation analysis pipeline. 
+    rather for the sharing of code that I have found useful for all my DNA 
+    methylation analyses. 
 Imports: 
+Suggests:
     minfi (>= 1.22.1),
     wateRmelon (>= 1.20.3)
-Suggests:
     minfiData (>= 0.24.0),
     minfiDataEPIC (>= 1.4.0)
 Enhances: minfi
