@@ -1,18 +1,18 @@
-Package: vicbits
+Package: yahew
 Type: Package
-Title: Helpful Functions for Methylation Array Analysis
+Title: Miscellaneous functions, mainly for DNAme analysis
 Version: 0.1.0
 Author: person("Victor", "Yuan", email = "victor.2wy@gmail.com",
 	      role = c("aut", "cre"))
 Maintainer: Victor Yuan <victor.2wy@gmail.com>
-URL: http://github.com/wvictor14/vicbits
-BugReports: http://github.com/wvictor14/vicbits
-Description: This package contains functions that I and others have found useful 
-    for the analysis of DNA methylation array data (27k, 450k, EPIC). This 
-    package is not mean't for a comprehensive processing and analysis, but 
-    rather for the sharing of code that I have found useful for all my DNA 
-    methylation analyses. 
+URL: http://github.com/wvictor14/yahew
+BugReports: http://github.com/wvictor14/yahew
+Description: This package contains functions that I have developed for my 
+    analysis of DNA methylation array data (450k, EPIC). 
 Imports: 
+    plyr (>= 1.8.4),
+    dplyr (>= 0.7.8),
+    readxl (>= 1.2.0)
 Suggests:
     minfi (>= 1.22.1),
     wateRmelon (>= 1.20.3),
@@ -22,4 +22,4 @@ Enhances: minfi
 License: GPL (>= 2)
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1
