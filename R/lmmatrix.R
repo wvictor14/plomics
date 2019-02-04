@@ -1,15 +1,15 @@
-#' Creates a matrix of p values or rsquared between a matrix of independent
-#' variables and a dataframe of dependent variables
+#' Tests associations between multiple independent and dependent variables
 #'
 #' \code{lmmatrix} tests association between independent variables and dependent
-#' variables through simple linear regression (1 predictor variable)
+#' variables through simple linear regression (with 1 predictor variable)
 #'
 #' @param dep n x d matrix or dataframe of dependent variables, where the
 #' variables are arranged in columns, and samples or observations in rows.
-#' @param ind n x i matrix or dataframe of independent variables, in same format
-#' as dep.
-#' @param metric Determines what is returned from linear models. Either
-#' 'Rsquared' or 'Pvalue'.
+#' @param ind n x i matrix or dataframe of independent variables, where the
+#' variables are arranged in columns, and samples or observations in rows.
+#' @param metric Determines what is returned from the linear models. 'Rsquared' 
+#' returns the proportion of variance explained, and 'Pvalue' returns the 
+#' p-value.
 #' @details Each independent variable is tested for their association with each
 #' dependent variable in simple linear regression (ind ~ dep), and a pvalue or
 #' rsquared is extracted and returned as a matrix.
