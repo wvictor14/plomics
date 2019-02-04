@@ -2,8 +2,7 @@
 % Please edit documentation in R/lmmatrix.R
 \name{lmmatrix}
 \alias{lmmatrix}
-\title{Creates a matrix of p values or rsquared between a matrix of independent
-variables and a dataframe of dependent variables}
+\title{Tests associations between multiple independent and dependent variables}
 \usage{
 lmmatrix(dep, ind, metric = "Rsquared")
 }
@@ -11,18 +10,19 @@ lmmatrix(dep, ind, metric = "Rsquared")
 \item{dep}{n x d matrix or dataframe of dependent variables, where the
 variables are arranged in columns, and samples or observations in rows.}
 
-\item{ind}{n x i matrix or dataframe of independent variables, in same format
-as dep.}
+\item{ind}{n x i matrix or dataframe of independent variables, where the
+variables are arranged in columns, and samples or observations in rows.}
 
-\item{metric}{Determines what is returned from linear models. Either
-'Rsquared' or 'Pvalue'.}
+\item{metric}{Determines what is returned from the linear models. 'Rsquared' 
+returns the proportion of variance explained, and 'Pvalue' returns the 
+p-value.}
 }
 \value{
 A i x d matrix of pvalues or rsquared values.
 }
 \description{
 \code{lmmatrix} tests association between independent variables and dependent
-variables through simple linear regression (1 predictor variable)
+variables through simple linear regression (with 1 predictor variable)
 }
 \details{
 Each independent variable is tested for their association with each
