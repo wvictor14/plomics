@@ -34,7 +34,7 @@ makeSampleSheet <- function(samples, path = NULL){
   master_ss <- readxl::read_xlsx(path, sheet = 1, skip = 7) 
   
   # filter to those matching sample names vector
-  samples <- paste0(samples, '(?!\\d)')
+  samples <- paste0(samples, '(?!\\d)') # ensures that PM# does not match PM## (e.g. PM3 != PM30)
   ss <- master_ss %>% dplyr::filter(grepl(paste(samples, collapse = '|'), Sample_Name, perl = T))
 
   # create file names and find filepath for idats
