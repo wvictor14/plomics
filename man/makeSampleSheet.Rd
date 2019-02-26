@@ -4,13 +4,16 @@
 \alias{makeSampleSheet}
 \title{Creates a sample sheet out of the Robinson Lab's master sample sheet}
 \usage{
-makeSampleSheet(samples, path = NULL)
+makeSampleSheet(samples, ss_path = NULL, data_path = NULL)
 }
 \arguments{
 \item{samples}{a vector of sample IDs}
 
-\item{path}{filepath to master sample sheet, defaults to 'Z:/ROBLAB6 Infinium450k John/450k 
+\item{ss_path}{filepath to master sample sheet, defaults to 'Z:/ROBLAB6 Infinium450k John/450k 
 Sample Sheets/MASTER SS.xlsx'}
+
+\item{data_path}{file path to the parent directory containing all idats. Idats can be in 
+subdirectories within the parent directory.}
 }
 \description{
 \code{makeSampleSheet} returns the relevant idats and filepaths for a set of sample names.
@@ -21,7 +24,9 @@ plate, batch, Chip ID (Sentrix_ID), Row and column (Sentrix Position), and full 
 returned.
 
 First it finds the sentrix Id and position from the master sample sheet (currently 450k only), 
-then it finds the associated idats within the 450k Raw data folder, and returns the path info.
+then it finds the associated idats within the 450k Raw data folder, and returns the path info. If
+the robinson lab shared drive is mapped to a drive other than "Z:/", then you can specify the
+file paths `ss_path` and `data_path`.
 
 If a sample has been ran more than once, a dataframe will be printed along with batch / tissue 
 information.
