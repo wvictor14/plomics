@@ -1,7 +1,7 @@
 Package: yahew
 Type: Package
 Title: Miscellaneous functions, mainly for DNAme analysis
-Version: 0.1.0
+Version: 0.1.1
 Author: person("Victor", "Yuan", email = "victor.2wy@gmail.com",
 	      role = c("aut", "cre"))
 Maintainer: Victor Yuan <victor.2wy@gmail.com>
