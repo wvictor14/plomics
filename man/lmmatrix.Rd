@@ -27,7 +27,8 @@ variables through simple linear regression (with 1 predictor variable)
 \details{
 Each independent variable is tested for their association with each
 dependent variable in simple linear regression (ind ~ dep), and a pvalue or
-rsquared is extracted and returned as a matrix.
+rsquared is extracted and returned as a matrix. broom::glance() is used to 
+calculate p value for the whole model.
 }
 \examples{
 ## to calculate PC association with covariates

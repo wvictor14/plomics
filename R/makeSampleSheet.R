@@ -1,7 +1,9 @@
 #' Creates a sample sheet out of the Robinson Lab's master sample sheet
 #'
 #' \code{makeSampleSheet} find idats and returnsa data frame for a given set of samples.
-#' @details Takes a vector of sample IDs and finds relevant experiment information. For example, 
+#' @details DOES NOT WORK CURRENTLY, NEED TO UPDATE WITH NEW MASTER SS
+#' 
+#' Takes a vector of sample IDs and finds relevant experiment information. For example, 
 #' plate, batch, Chip ID (Sentrix_ID), Row and column (Sentrix Position), and full file path are 
 #' returned.
 #' 

@@ -6,6 +6,10 @@
 #' @details Each variable is tested for their association with each other 
 #' variable in simple linear regression (if at least one numerical variable), 
 #' or chi squared test (if two categorical).
+#' @importFrom utils combn
+#' @importFrom stats as.formula
+#' @importFrom stats chisq.test
+#' @importFrom stats lm
 #' @examples
 #' ## to calculate PC association with covariates
 #'

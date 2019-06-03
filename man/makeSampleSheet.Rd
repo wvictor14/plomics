@@ -9,29 +9,34 @@ makeSampleSheet(samples, ss_path = NULL, data_path = NULL)
 \arguments{
 \item{samples}{a vector of sample IDs}
 
-\item{ss_path}{filepath to master sample sheet, defaults to 'Z:/ROBLAB6 Infinium450k John/450k 
+\item{ss_path}{file path to master sample sheet. Defaults to 'Z:/ROBLAB6 Infinium450k John/450k 
 Sample Sheets/MASTER SS.xlsx'}
 
-\item{data_path}{file path to the parent directory containing all idats. Idats can be in 
-subdirectories within the parent directory.}
+\item{data_path}{file path to a parent directory containing idats. Idats can be in 
+subdirectories within the parent directory. Defaults to 'Z:/ROBLAB6 Infinium450k John/450k Raw 
+Data'}
 }
 \description{
-\code{makeSampleSheet} returns the relevant idats and filepaths for a set of sample names.
+\code{makeSampleSheet} find idats and returnsa data frame for a given set of samples.
 }
 \details{
+DOES NOT WORK CURRENTLY, NEED TO UPDATE WITH NEW MASTER SS
+
 Takes a vector of sample IDs and finds relevant experiment information. For example, 
 plate, batch, Chip ID (Sentrix_ID), Row and column (Sentrix Position), and full file path are 
 returned.
 
 First it finds the sentrix Id and position from the master sample sheet (currently 450k only), 
-then it finds the associated idats within the 450k Raw data folder, and returns the path info. If
-the robinson lab shared drive is mapped to a drive other than "Z:/", then you can specify the
-file paths `ss_path` and `data_path`.
+then it finds the associated idats within the 450k Raw data folder, and returns file path 
+information. If the robinson lab shared drive is mapped to a drive other than "Z:/", then you can
+specify change the file paths with `ss_path` and `data_path`.
 
 If a sample has been ran more than once, a dataframe will be printed along with batch / tissue 
 information.
 
-Note that the shared drive needs to be mapped to Z:
+If there are copies of the same idats located in different directories, both will be added to the
+data frame. Be aware that multiple copies of the same idats won't be able to be loaded with 
+minfi::read.metharray.sheet.
 }
 \examples{
 samples <- c('PM4', 'PM30', 'PM47', 'PM123', 'PM130', 'PM252')
