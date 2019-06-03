@@ -12,8 +12,10 @@
 #' p-value.
 #' @details Each independent variable is tested for their association with each
 #' dependent variable in simple linear regression (ind ~ dep), and a pvalue or
-#' rsquared is extracted and returned as a matrix.
+#' rsquared is extracted and returned as a matrix. broom::glance() is used to 
+#' calculate p value for the whole model.
 #' @return A i x d matrix of pvalues or rsquared values.
+#' @ImportFrom("stats", "lm", "na.omit")
 #' @examples
 #' ## to calculate PC association with covariates
 #'
@@ -27,6 +29,7 @@
 #'
 #' lmmatrix(dep = pc_matrix, ind = cov)
 #' lmmatrix(dep = pc_matrix, ind = cov, metric = 'Pvalue')
+#' @export
 
 lmmatrix <- function(dep, ind, metric = 'Rsquared'){
   # define output matrix
@@ -37,12 +40,12 @@ lmmatrix <- function(dep, ind, metric = 'Rsquared'){
   # run linear models
   for(i in 1:n_ind) {
     for(j in 1:n_dep) {
-      fit <- summary(lm(dep[,j,drop=T] ~ ind[,i,drop=T], na.action=na.omit))
+      fit <- lm(dep[,j,drop=T] ~ ind[,i,drop=T], na.action=na.omit)
       if (metric == 'Pvalue'){
-        out[i,j] <- fit$coefficients[2,4]
+        out[i,j] <- broom::glance(fit)$p.value
       }
       if (metric == 'Rsquared'){
-        out[i,j] <- fit$r.squared
+        out[i,j] <- summary(fit)$r.squared
       }
     }
   }
