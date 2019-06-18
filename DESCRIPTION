@@ -1,13 +1,13 @@
-Package: yahew
+Package: plomics
 Type: Package
 Title: Miscellaneous functions, mainly for DNAme analysis
-Version: 0.1.1
+Version: 0.1.2
 Author: person("Victor", "Yuan", email = "victor.2wy@gmail.com",
 	      role = c("aut", "cre"))
 Maintainer: Victor Yuan <victor.2wy@gmail.com>
 URL: http://github.com/wvictor14/yahew
 BugReports: http://github.com/wvictor14/yahew
-Description: This package contains functions that I have developed for my 
+Description: This package contains functions that I have developed mainly for
     analysis of DNA methylation array data (450k, EPIC). 
 Imports: 
     plyr (>= 1.8.4),

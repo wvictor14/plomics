@@ -1,5 +1,5 @@
-yahew
-=====
+plomics
+=======
 
 This is my collection of tools for DNA methylation analysis.
 
@@ -138,7 +138,7 @@ categorical, then a chi squared test must be used.
 ### makeSampleSheet
 
 `makeSampleSheet` takes a vector of sample IDs and queries the Robinson
-lab 'MASTER SS.xlsx' for associated idats. It returns chip/batch,
+lab ‘MASTER SS.xlsx’ for associated idats. It returns chip/batch,
 filepath information along with some basic clinical variables that are
 available such as tissue type, GA and sex. The returned dataframe can be
 used to directly load in these idats into an `minfi::rgset`.
@@ -171,8 +171,8 @@ cfrifs02 is mapped to Z:
     ## #   Sex <chr>, GA <chr>, MA <dbl>, Basename <chr>
 
 Notice we looked based on case ID, and what was returned contains files
-associated with that case (e.g. PM306 returned 'PM306r', 'PM306\_d',
-'PM306\_v',...)
+associated with that case (e.g. PM306 returned ‘PM306r’, ‘PM306\_d’,
+‘PM306\_v’,…)
 
     rgset <- minfi::read.metharray.exp(targets = ss, verbose = T)
 
@@ -216,9 +216,9 @@ associated with that case (e.g. PM306 returned 'PM306r', 'PM306\_d',
 
     ## [read.metharray] Reading 9266441156_R01C01_Red.idat
 
-    ## [read.metharray] Read idat files in 6.4 seconds
+    ## [read.metharray] Read idat files in 6.6 seconds
 
-    ## [read.metharray] Creating data matrices ... done in 9.2 seconds
+    ## [read.metharray] Creating data matrices ... done in 8.6 seconds
     ## [read.metharray] Instantiating final object ... done in 0.1 seconds
 
     ## Warning: Setting row names on a tibble is deprecated.

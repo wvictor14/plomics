@@ -7,7 +7,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-# yahew
+# plomics
 
 This is my collection of tools for DNA methylation analysis.
 
