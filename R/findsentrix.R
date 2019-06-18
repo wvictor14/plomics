@@ -41,7 +41,7 @@
 #'   dplyr::full_join(findsentrix(sentrix = ss$Sentrix, directory = idat_dir))
 #'
 #' ## Now you can load in these samples with minfi::read.metharray.exp
-#' rgset <- minfi::read.metharray.exp(targets = ss, verbose = TRUE)
+#' rgset <- minfi::read.metharray.exp(targets = as.data.frame(ss), verbose = TRUE)
 #' 
 #' @export
 
