@@ -15,7 +15,7 @@
 #' rsquared is extracted and returned as a matrix. broom::glance() is used to 
 #' calculate p value for the whole model.
 #' @return A i x d matrix of pvalues or rsquared values.
-#' @ImportFrom("stats", "lm", "na.omit")
+#' 
 #' @examples
 #' ## to calculate PC association with covariates
 #'
@@ -40,7 +40,7 @@ lmmatrix <- function(dep, ind, metric = 'Rsquared'){
   # run linear models
   for(i in 1:n_ind) {
     for(j in 1:n_dep) {
-      fit <- lm(dep[,j,drop=T] ~ ind[,i,drop=T], na.action=na.omit)
+      fit <- stats::lm(dep[,j,drop=TRUE] ~ ind[,i,drop=TRUE], na.action=stats::na.omit)
       if (metric == 'Pvalue'){
         out[i,j] <- broom::glance(fit)$p.value
       }
