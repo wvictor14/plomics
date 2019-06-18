@@ -9,6 +9,7 @@ URL: http://github.com/wvictor14/yahew
 BugReports: http://github.com/wvictor14/yahew
 Description: This package contains functions that I have developed mainly for
     analysis of DNA methylation array data (450k, EPIC). 
+Depends: R (>= 2.10)
 Imports: 
     plyr (>= 1.8.4),
     dplyr (>= 0.8.1),
@@ -16,7 +17,9 @@ Imports:
     broom (>= 0.5.2),
     stats (>= 3.6.0),
     utils (>= 3.6.0),
-    magrittr
+    magrittr,
+    tibble,
+    stringr
 Suggests:
     minfi (>= 1.22.1),
     wateRmelon (>= 1.20.3),

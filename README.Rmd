@@ -1,43 +1,58 @@
 ---
-title: "README"
-author: "Victor"
-date: "September 14, 2018"
-output: md_document
-editor_options: 
+title: "plomics"
+output:
+  html_document:
+    df_print: kable
+    keep_md: yes
+    self_contained: yes
+    theme: spacelab
+    toc: yes
+    toc_depth: 3
+    toc_float:
+      collapsed: no
+editor_options:
   chunk_output_type: console
 ---
 
-# plomics
+A collection of functions for placental DNA methylation analysis.
 
-This is my collection of tools for DNA methylation analysis.
+- [Install](#install)
+  - [lmmatrix](#lmmatrix)
+  - [pairTest](#pairtest)
+  - [findsentrix](#findsentrix)
 
-### Install
+
+## Install
 
 ```{r message = F, eval = F}
-library(devtools)
-install_github('wvictor14/yahew')
+remotes::install_github('wvictor14/plomics')
 ```
 
-```{r, message = F, warning = F}
+```{r, message = F, warning = F, include = F}
 library(plyr)
 library(tidyr)
 library(dplyr)
 library(ggplot2)
-library(minfiData)
-library(yahew)
 ```
+
+## Functions
 
 ### lmmatrix
 
 Computes pairwise linear models between several variables.
 
 ```{r message = F}
+library(minfiData)
+library(plomics)
+
 # load example data
 data(RGsetEx)
 
 # calculate pcs on the data
 betas <- getBeta(RGsetEx)
 pc_obj <- prcomp(t(na.omit(betas)), center = T, scale = T)
+
+# get pc scores for each sample
 rotated <- pc_obj$x
 
 #rsquared
@@ -95,7 +110,7 @@ To test if covariates are confounding each other, we need to pairwise tests of i
 covariates. If at least one covariate is numeric, we can use linear regression. Otherwise if both
 covariates are categorical, then a chi squared test must be used.
 
-```{r}
+```{r, warning = F}
 variables <- data.frame(
   row = c(1, 1, 2, 2, 3, 3),
   column = c(1, 1, 1, 2, 2, 2),
@@ -121,22 +136,58 @@ ggplot(tests, aes(x=Row, y = Column, fill = pval_cat)) +
                                '< 0.01' = '#fdbb84', '< 0.001' = '#e34a33'))
 ```
 
-### makeSampleSheet
+### findsentrix
 
-`makeSampleSheet` takes a vector of sample IDs and queries the Robinson lab 'MASTER SS.xlsx' for associated idats. It returns chip/batch, filepath information along with some basic clinical variables that are available such as tissue type, GA and sex. The returned dataframe can be used to directly load in these idats into an `minfi::rgset`.
+`findsentrix` takes a vector of sentrix IDs (chip identifiers) and searches a directory for IDAT 
+files that match. The returned data frame contains two columns: (1) the sentrix ID (2) unique file 
+paths for each idat that matches the sentrix ID. 
 
-This function does not work unless connected to BCCHR network and cfrifs02 is mapped to Z:
+Here is an example using the robinson lab master sample sheet:
 
 ```{r}
-# Queried samples
-samples <- c('PM4', 'PM30', 'PM47', 'PM123', 'PM130', 'PM306')
-ss <- makeSampleSheet(samples)
-ss
+# read in master sample sheet
+ss <- readxl::read_xlsx('Z:/ROBLAB6 Infinium450k John/Master_Sample_Sheet.xlsx')
+
+## specify idat directory
+idat_dir <- 'Z:/ROBLAB6 Infinium450k John/EPIC Raw data/'
+
+ss <- ss %>% 
+
+# Take the first 6 EPIC samples
+  dplyr::arrange(desc(Platform)) %>% 
+  dplyr::slice(1:6) %>% 
+  dplyr::select(Sample_Name, Sentrix_ID, Sentrix_Position) %>%
+ 
+# create sentrix column
+  dplyr::mutate(Sentrix = paste0(Sentrix_ID, '_', Sentrix_Position))
 ```
 
-Notice we looked based on case ID, and what was returned contains files associated with that case (e.g. PM306 returned 'PM306r', 'PM306_d', 'PM306_v',...)
+We created a sentrix ID by taking the chip serial number (confusingly named as "sentrix_ID") and 
+pasting this to the position identifier ("Sentrix_Position"):
+
+**Sentrix:** `r ss$Sentrix[1]`
+
+**Sentrix Chip Number:** `r as.character(ss$Sentrix_ID[1])`
+
+**Sentrix Position on chip:** `r ss$Sentrix_Position[1]`
+
+
+Now we can use `findsentrix` to find the filepaths for idats that match each sentrix identifier:
 
 ```{r}
-rgset <- minfi::read.metharray.exp(targets = ss, verbose = T)
+idatfiles <- findsentrix(sentrix = ss$Sentrix, directory = idat_dir)
+idatfiles
+
+# join all matches, retaining unmatched and multiple matched IDs
+ss <- ss %>%
+  dplyr::full_join(idatfiles, by = 'Sentrix')
+```
+
+Finally, we can load idats using this dataframe:
+
+```{r}
+## Now you can load in these samples with minfi::read.metharray.exp
+rgset <- minfi::read.metharray.exp(targets = as.data.frame(ss), verbose = T)
 rgset
 ```
+
