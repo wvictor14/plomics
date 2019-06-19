@@ -1,26 +1,14 @@
 ---
 title: "plomics"
-output:
-  html_document:
-    df_print: kable
-    keep_md: yes
-    self_contained: yes
-    theme: spacelab
-    toc: yes
-    toc_depth: 3
-    toc_float:
-      collapsed: no
-editor_options:
+output: 
+    github_document:
+        toc: true
+        toc_depth: 3
+editor_options: 
   chunk_output_type: console
 ---
 
 A collection of functions for placental DNA methylation analysis.
-
-- [Install](#install)
-  - [lmmatrix](#lmmatrix)
-  - [pairTest](#pairtest)
-  - [findsentrix](#findsentrix)
-
 
 ## Install
 
