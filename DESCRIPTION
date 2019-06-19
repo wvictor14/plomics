@@ -1,7 +1,7 @@
 Package: plomics
 Type: Package
 Title: Miscellaneous functions, mainly for DNAme analysis
-Version: 0.1.2
+Version: 0.2.0
 Author: person("Victor", "Yuan", email = "victor.2wy@gmail.com",
 	      role = c("aut", "cre"))
 Maintainer: Victor Yuan <victor.2wy@gmail.com>
